@@ -2,9 +2,25 @@ package Config::Do;
 
 use strict;
 use warnings;
+use Exporter::Lite;
+use Carp;
 
 our $VERSION = '0.01';
 
+our @EXPORT = qw(config_do);
+
+sub config_do ($) {
+	my $filename = shift;
+	my $hash = do "$filename";
+
+	croak $@ if $@;
+	croak $! unless defined $hash;
+	unless (ref($hash) eq 'HASH') {
+		croak "$filename does not return HashRef.";
+	}
+
+	wantarray ? %$hash : $hash;
+}
 
 1;
 __END__
